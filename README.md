@@ -153,6 +153,14 @@ Open `http://127.0.0.1:8000/` in your browser.
 ---
 
 ## 📸 Screenshots *(Optional Section)*
+![Image](https://github.com/user-attachments/assets/e26ecfee-8c14-46e8-a460-9268341548ab)
+![Image](https://github.com/user-attachments/assets/d0285fff-99a3-44d8-9c5b-226844676804)
+![Image](https://github.com/user-attachments/assets/6998b0cd-1185-4500-b5bd-ac6f266f5e91)
+![Image](https://github.com/user-attachments/assets/1c780482-db08-4c12-82f3-c607f6bd6765)
+<!-- Failed to upload "projecy.mp4" -->
+![Image](https://github.com/user-attachments/assets/613786b8-2c26-42a7-8f66-b2694fffddb6)
+![Image](https://github.com/user-attachments/assets/7e158486-ff80-4286-b47e-101e986d13da)
+![Image](https://github.com/user-attachments/assets/07a170cb-e764-40bb-a664-621554a20407)
 
 You can insert screenshots using:
 
