@@ -1,6 +1,7 @@
 
 
 ---
+![Image](https://github.com/user-attachments/assets/e26ecfee-8c14-46e8-a460-9268341548ab)
 
 # 🧠 **AllocEngine** – Smart Exam Hall Allocation System
 
