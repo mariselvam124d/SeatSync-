@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Hall Allocation System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --danger-color: #e74c3c;
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+            background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+
+        .form-container {
+            background-color: #fff;
+            max-width: 700px;
+            margin: auto;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-top: 5px solid var(--primary-color);
+            animation: fadeInUp 0.8s;
+        }
+
+        .form-container:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header h2 {
+            color: var(--dark-color);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header .icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: bounceIn 1s;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 8px;
+        }
+
+        .form-control, .form-select {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        }
+
+        .btn-submit {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-submit:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(41, 128, 185, 0.3);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .note {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            text-align: center;
+        }
+
+        .input-group-text {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .progress-container {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .progress-bar {
+            background-color: var(--primary-color);
+            transition: width 1s ease;
+        }
+
+        .student-count {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .additional-options {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .option-toggle {
+            cursor: pointer;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .option-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .capacity-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .capacity-meter {
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            flex-grow: 1;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+
+        .capacity-fill {
+            height: 100%;
+            background-color: var(--secondary-color);
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 15px;
+            }
+            
+            .form-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container animate__animated animate__fadeInUp">
+            <div class="header">
+                <div class="icon">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <h2>Exam Hall Allocation System</h2>
+                <p class="text-muted">Allocate students to examination halls efficiently</p>
+            </div>
+
+            <form method="POST" id="allocationForm">
+                {% csrf_token %}
+
+                <div class="mb-4">
+                    <label for="exam_id" class="form-label">Select Exam</label>
+                    <select class="form-select" name="exam_id" required>
+                        <option value="" selected disabled>Choose an exam</option>
+                        {% for exam in exams %}
+                            <option value="{{ exam.id }}">{{ exam.exam_name }} ({{ exam.course_code }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label for="hall_name" class="form-label">Select Hall</label>
+                        <select class="form-select" name="hall_name" id="hallSelect" required>
+                            <option value="" selected disabled>Choose a hall</option>
+                            {% for hall in halls %}
+                                <option value="{{ hall.hall_name }}" data-capacity="{{ hall.capacity }}">
+                                    {{ hall.hall_name }} (Capacity: {{ hall.capacity }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label">Current Capacity</label>
+                        <div class="capacity-info">
+                            <span id="currentCount">0</span>
+                            <div class="capacity-meter">
+                                <div class="capacity-fill" id="capacityFill"></div>
+                            </div>
+                            <span id="totalCapacity">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <label for="exam_date" class="form-label">Exam Date</label>
+                        <input type="date" class="form-control" name="exam_date" required>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <label for="exam_time" class="form-label">Exam Time</label>
+                        <input type="time" class="form-control" name="exam_time" required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="roll_number" class="form-label">Student Roll Numbers</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fas fa-users"></i></span>
+                        <textarea class="form-control" name="roll_number" rows="3" 
+                                  placeholder="Enter roll numbers separated by commas or new lines (e.g. 22CS001, 22CS002...)" 
+                                  required></textarea>
+                    </div>
+                    <div class="student-count">
+                        <span id="studentCount">0 students</span>
+                        <span id="duplicateCount" class="text-danger" style="display: none;"></span>
+                    </div>
+                </div>
+
+                <div class="additional-options">
+                    <div class="option-toggle" onclick="toggleOptions()">
+                        <i class="fas fa-cog"></i> Advanced Options <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="option-content" id="advancedOptions">
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="randomAllocation" name="random_allocation">
+                            <label class="form-check-label" for="randomAllocation">Randomize seat allocation</label>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="specialNeeds" name="special_needs">
+                            <label class="form-check-label" for="specialNeeds">Include special needs accommodations</label>
+                        </div>
+                        <div class="mb-3">
+                            <label for="bufferSeats" class="form-label">Buffer Seats (social distancing)</label>
+                            <input type="number" class="form-control" id="bufferSeats" name="buffer_seats" min="0" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress mb-3" style="height: 10px;">
+                        <div class="progress-bar" id="allocationProgress" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <div class="text-center" id="progressText">Processing allocation...</div>
+                </div>
+
+                <button type="submit" class="btn btn-submit" id="submitBtn">
+                    <i class="fas fa-tasks"></i> Allocate Hall
+                </button>
+
+                <p class="note">
+                    <i class="fas fa-info-circle"></i> Only valid student roll numbers will be allocated. 
+                    Duplicates will be automatically removed.
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle advanced options
+        function toggleOptions() {
+            const options = document.getElementById('advancedOptions');
+            const icon = document.querySelector('.option-toggle i.fa-chevron-down');
+            
+            if (options.style.display === 'block') {
+                options.style.display = 'none';
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            } else {
+                options.style.display = 'block';
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            }
+        }
+
+        // Update student count when textarea changes
+        document.querySelector('textarea[name="roll_number"]').addEventListener('input', function() {
+            const text = this.value;
+            const rollNumbers = text.split(/[\n,]+/).filter(num => num.trim() !== '');
+            
+            // Count unique roll numbers
+            const uniqueRollNumbers = [...new Set(rollNumbers)];
+            const duplicateCount = rollNumbers.length - uniqueRollNumbers.length;
+            
+            document.getElementById('studentCount').textContent = `${uniqueRollNumbers.length} students`;
+            
+            if (duplicateCount > 0) {
+                document.getElementById('duplicateCount').style.display = 'inline';
+                document.getElementById('duplicateCount').textContent = `${duplicateCount} duplicates`;
+            } else {
+                document.getElementById('duplicateCount').style.display = 'none';
+            }
+            
+            updateCapacityInfo();
+        });
+
+        // Update hall capacity information
+        document.getElementById('hallSelect').addEventListener('change', function() {
+            updateCapacityInfo();
+        });
+
+        function updateCapacityInfo() {
+            const hallSelect = document.getElementById('hallSelect');
+            const selectedOption = hallSelect.options[hallSelect.selectedIndex];
+            const capacity = selectedOption ? parseInt(selectedOption.dataset.capacity) : 0;
+            
+            const textarea = document.querySelector('textarea[name="roll_number"]');
+            const rollNumbers = textarea.value.split(/[\n,]+/).filter(num => num.trim() !== '');
+            const uniqueRollNumbers = [...new Set(rollNumbers)];
+            const studentCount = uniqueRollNumbers.length;
+            
+            document.getElementById('totalCapacity').textContent = capacity;
+            document.getElementById('currentCount').textContent = studentCount;
+            
+            const percentage = capacity > 0 ? Math.min(100, (studentCount / capacity) * 100) : 0;
+            document.getElementById('capacityFill').style.width = `${percentage}%`;
+            
+            // Change color based on capacity
+            const capacityFill = document.getElementById('capacityFill');
+            if (percentage > 90) {
+                capacityFill.style.backgroundColor = 'var(--danger-color)';
+            } else if (percentage > 70) {
+                capacityFill.style.backgroundColor = 'orange';
+            } else {
+                capacityFill.style.backgroundColor = 'var(--secondary-color)';
+            }
+        }
+
+        // Form submission with progress animation
+        document.getElementById('allocationForm').addEventListener('submit', function(e) {
+            const submitBtn = document.getElementById('submitBtn');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('allocationProgress');
+            const progressText = document.getElementById('progressText');
+            
+            // Disable button and show progress
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            progressContainer.style.display = 'block';
+            
+            // Simulate progress (in a real app, this would be actual progress updates)
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 5;
+                progressBar.style.width = `${progress}%`;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    progressText.innerHTML = '<i class="fas fa-check-circle text-success"></i> Allocation complete!';
+                }
+            }, 200);
+            
+            // In a real application, you would have actual AJAX progress tracking
+        });
+
+        // Initialize date picker with future dates only
+        const today = new Date().toISOString().split('T')[0];
+        document.querySelector('input[type="date"]').setAttribute('min', today);
+    </script>
+</body>
+</html>

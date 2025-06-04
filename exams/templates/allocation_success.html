@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Hall Allocation Success</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-dark: #2E7D32;
+            --secondary-color: #FFC107;
+            --dark-color: #333;
+            --light-color: #f8f9fa;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .card {
+            background: white;
+            color: var(--dark-color);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            animation: slideUp 1s ease forwards;
+            opacity: 0;
+            width: 90%;
+            max-width: 800px;
+            margin: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--primary-color));
+            background-size: 200% 100%;
+            animation: gradientBar 3s linear infinite;
+        }
+
+        @keyframes gradientBar {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        @keyframes slideUp {
+            0% {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .card h1 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .card p {
+            font-size: 1.1rem;
+            margin: 15px 0;
+            color: #555;
+        }
+
+        .checkmark-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
+        }
+
+        .checkmark-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(76, 175, 80, 0.1);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .checkmark {
+            position: relative;
+            font-size: 60px;
+            color: var(--primary-color);
+            animation: pop 0.6s ease, bounce 1.5s ease infinite;
+            z-index: 2;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            70% { transform: scale(1.1); opacity: 0.3; }
+            100% { transform: scale(0.95); opacity: 0.7; }
+        }
+
+        .allocation-details {
+            background-color: var(--light-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: left;
+            animation: fadeIn 1s ease forwards;
+            opacity: 0;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .detail-item {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .detail-icon {
+            width: 30px;
+            color: var(--primary-dark);
+            margin-right: 15px;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-dark);
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+            margin: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: #1b5e20;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(46, 125, 50, 0.4);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary-dark);
+            color: var(--primary-dark);
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-dark);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--secondary-color);
+            opacity: 0;
+            animation: confetti 5s ease-in-out infinite;
+        }
+
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .qr-code {
+            margin: 25px auto;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: fadeIn 1s ease forwards;
+            opacity: 0;
+            animation-delay: 0.8s;
+        }
+
+        .qr-code img {
+            width: 150px;
+            height: 150px;
+        }
+
+        .qr-note {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .card {
+                padding: 30px 20px;
+            }
+            
+            .card h1 {
+                font-size: 2rem;
+            }
+            
+            .btn-container {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .btn, .btn-outline {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Confetti elements -->
+    <div class="confetti" style="left: 10%; animation-delay: 0.5s;"></div>
+    <div class="confetti" style="left: 20%; animation-delay: 1s;"></div>
+    <div class="confetti" style="left: 30%; animation-delay: 1.5s;"></div>
+    <div class="confetti" style="left: 40%; animation-delay: 2s;"></div>
+    <div class="confetti" style="left: 50%; animation-delay: 2.5s;"></div>
+    <div class="confetti" style="left: 60%; animation-delay: 3s;"></div>
+    <div class="confetti" style="left: 70%; animation-delay: 3.5s;"></div>
+    <div class="confetti" style="left: 80%; animation-delay: 4s;"></div>
+    <div class="confetti" style="left: 90%; animation-delay: 4.5s;"></div>
+
+    <div class="card">
+        <div class="checkmark-container">
+            <div class="checkmark-bg"></div>
+            <div class="checkmark"><i class="fas fa-check-circle"></i></div>
+        </div>
+        
+        <h1>Exam Hall Allocation Successful!</h1>
+        <p class="lead">Your exam hall has been successfully assigned based on your academic details.</p>
+        
+        <div class="allocation-details">
+            <div class="detail-item">
+                <div class="detail-icon"><i class="fas fa-id-card"></i></div>
+                <div>
+                    <strong>Roll Number:</strong> CS2023-045
+                </div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-icon"><i class="fas fa-building"></i></div>
+                <div>
+                    <strong>Exam Hall:</strong> Block C - Room 205
+                </div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-icon"><i class="fas fa-calendar-alt"></i></div>
+                <div>
+                    <strong>Exam Date:</strong> June 15, 2023
+                </div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-icon"><i class="fas fa-clock"></i></div>
+                <div>
+                    <strong>Exam Time:</strong> 9:00 AM - 12:00 PM
+                </div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-icon"><i class="fas fa-chair"></i></div>
+                <div>
+                    <strong>Seat Number:</strong> B-14
+                </div>
+            </div>
+        </div>
+        
+        <div class="qr-code">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://example.com/verify/CS2023-045" alt="Verification QR Code">
+            <div class="qr-note">Scan this QR at the exam hall entrance</div>
+        </div>
+        
+        <p>Please bring your student ID and this allocation confirmation to the exam hall. Arrive at least 30 minutes before the exam starts.</p>
+        
+        <div class="btn-container">
+            <button class="btn btn-primary" onclick="window.location.href='/'">
+                <i class="fas fa-home"></i> Back to Dashboard
+            </button>
+            <button class="btn btn-outline" onclick="window.print()">
+                <i class="fas fa-print"></i> Print Confirmation
+            </button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Create additional confetti elements dynamically
+        document.addEventListener('DOMContentLoaded', function() {
+            const colors = ['#4CAF50', '#FFC107', '#2196F3', '#E91E63', '#9C27B0'];
+            
+            for (let i = 0; i < 20; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 5 + 's';
+                confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                confetti.style.height = (Math.random() * 10 + 5) + 'px';
+                document.body.appendChild(confetti);
+            }
+            
+            // Add animation to details items
+            const detailsItems = document.querySelectorAll('.detail-item');
+            detailsItems.forEach((item, index) => {
+                item.style.animation = `fadeIn 0.5s ease forwards ${index * 0.2 + 0.5}s`;
+                item.style.opacity = '0';
+            });
+        });
+    </script>
+</body>
+</html>

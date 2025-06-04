@@ -1,0 +1,639 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Exam Hall Allocation - KCET</title>
+  <link rel="icon" href="https://kcet.ac.in/images/logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    /* Reset & base */
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(120deg, #e0f0ff, #f9fbff);
+      color: #222;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+      display: block;
+      border-radius: 12px;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(90deg, #003366, #00509e);
+      color: #fff;
+      padding: 50px 20px 30px;
+      text-align: center;
+      animation: fadeSlideDown 1.2s ease forwards;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+    header h1 {
+      font-size: 3rem;
+      letter-spacing: 2px;
+      margin-bottom: 0.4em;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+    }
+    header p {
+      font-weight: 400;
+      font-size: 1.25rem;
+      opacity: 0.9;
+      font-style: italic;
+      letter-spacing: 1px;
+    }
+
+    /* Nav */
+    nav {
+      background-color: #0073e6;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding: 18px 0;
+      box-shadow: 0 2px 10px rgba(0,115,230,0.3);
+      transition: background-color 0.3s ease;
+      animation: fadeIn 1.8s ease forwards;
+    }
+    nav:hover {
+      background-color: #005bb5;
+    }
+    nav a {
+      color: white;
+      font-weight: 700;
+      padding: 12px 28px;
+      border-radius: 10px;
+      background: rgba(255 255 255 / 0.15);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      box-shadow: 0 0 8px rgba(255,255,255,0.3);
+    }
+    nav a:hover {
+      background: #003366;
+      transform: scale(1.1);
+      box-shadow: 0 0 15px #003366;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1100px;
+      margin: 40px auto 60px;
+      padding: 30px 20px;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+      animation: fadeInUp 1.3s ease forwards;
+    }
+
+    /* College Info */
+    .college-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      align-items: center;
+      margin-bottom: 50px;
+    }
+    .college-info img {
+      width: 200px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+      border-radius: 15px;
+      transition: transform 0.4s ease;
+      cursor: pointer;
+    }
+    .college-info img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+    .college-info-text {
+      flex: 1;
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: #333;
+      text-align: justify;
+      letter-spacing: 0.03em;
+    }
+
+    /* Feature Cards */
+    .highlight-cards {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 60px;
+    }
+    .card {
+      flex: 1 1 280px;
+      background: #e8f1ff;
+      padding: 25px 20px;
+      border-radius: 20px;
+      box-shadow: 0 5px 18px rgba(0, 80, 160, 0.12);
+      cursor: default;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(0, 80, 160, 0.25);
+    }
+    .card h3 {
+      color: #00509e;
+      margin-bottom: 12px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .card p {
+      font-size: 1rem;
+      color: #444;
+      line-height: 1.5;
+    }
+
+    /* Prompt */
+    .prompt {
+      font-size: 1.3rem;
+      text-align: center;
+      margin-top: 40px;
+      font-weight: 600;
+      color: #00509e;
+      letter-spacing: 0.05em;
+      animation: pulse 2.5s infinite;
+      user-select: none;
+    }
+
+    /* Results Section */
+    .results-section {
+      margin-top: 60px;
+    }
+    .results-section h2 {
+      text-align: center;
+      color: #003366;
+      margin-bottom: 30px;
+      font-size: 2rem;
+      letter-spacing: 0.05em;
+      text-shadow: 1px 1px 2px #a0a0a0;
+      animation: fadeIn 2s ease forwards;
+    }
+    table.results-table {
+      width: 100%;
+      border-collapse: collapse;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      animation: fadeSlideUp 2s ease forwards;
+    }
+    table.results-table th,
+    table.results-table td {
+      padding: 15px 20px;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #004080;
+      border-bottom: 1px solid #d0d7e6;
+      background: #f9fbff;
+      transition: background-color 0.3s ease;
+    }
+    table.results-table th {
+      background: #d9e4f5;
+    }
+    table.results-table tbody tr:hover {
+      background: #c9d6f8;
+    }
+
+    /* Photo Gallery */
+    .photo-gallery {
+      margin-top: 70px;
+    }
+    .photo-gallery h2 {
+      text-align: center;
+      font-size: 2rem;
+      color: #003366;
+      margin-bottom: 30px;
+      letter-spacing: 0.05em;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+      padding: 0 10px;
+    }
+    .gallery-grid img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      cursor: pointer;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .gallery-grid img:hover {
+      transform: scale(1.08);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    }
+
+   
+    
+
+    /* Animations */
+    @keyframes fadeSlideDown {
+      0% {
+        opacity: 0;
+        transform: translateY(-60px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes fadeSlideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.05);
+        opacity: 0.85;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .college-info {
+        flex-direction: column;
+        text-align: center;
+      }
+      .college-info-text {
+        text-align: center;
+      }
+        nav {
+          gap: 20px;
+          flex-wrap: wrap;
+        }
+        .highlight-cards {
+          flex-direction: column;
+          gap: 25px;
+        }
+      }
+       
+
+    /* Developer Section - Simplified */
+    .developer-section {
+      background: linear-gradient(135deg, #f5f9ff, #e1ebff);
+      padding: 50px 20px;
+      text-align: center;
+    }
+    .developer-container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0, 80, 160, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    .developer-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, #00509e, #0073e6);
+    }
+    .developer-photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid #e8f1ff;
+      margin: 0 auto 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    .developer-name {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.6rem;
+      color: #003366;
+      margin-bottom: 5px;
+      font-weight: 700;
+    }
+    .developer-college {
+      color: #0073e6;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 25px;
+    }
+    .social-link {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #e8f1ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00509e;
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
+    }
+    .social-link:hover {
+      background: #00509e;
+      color: white;
+      transform: scale(1.1);
+    }
+
+    /* Watermark */
+    .watermark {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 83, 158, 0.8);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      z-index: 100;
+      backdrop-filter: blur(2px);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+      
+    }
+    footer {
+      background: #003366;
+      color: white;
+      text-align: center;
+      padding: 25px 10px;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      box-shadow: inset 0 3px 5px rgba(255,255,255,0.1);
+      margin-top: auto;
+      user-select: none;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Developer Section - Simplified */
+    .developer-section {
+      background: linear-gradient(135deg, #f5f9ff, #e1ebff);
+      padding: 50px 20px;
+      text-align: center;
+    }
+    .developer-container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0, 80, 160, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    .developer-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, #00509e, #0073e6);
+    }
+    .developer-photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid #e8f1ff;
+      margin: 0 auto 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    .developer-name {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.6rem;
+      color: #003366;
+      margin-bottom: 5px;
+      font-weight: 700;
+    }
+    .developer-college {
+      color: #0073e6;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 25px;
+    }
+    .social-link {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #e8f1ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00509e;
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
+    }
+    .social-link:hover {
+      background: #00509e;
+      color: white;
+      transform: scale(1.1);
+    }
+
+    /* Watermark */
+    .watermark {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 83, 158, 0.8);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      z-index: 100;
+      backdrop-filter: blur(2px);
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Exam Hall Allocation System</h1>
+  <p>Kamaraj College of Engineering and Technology</p>
+</header>
+
+<nav>
+  <a href="/staff/admin_allocation/">Staff (Admin) Allocation Panel</a>
+  <a href="/student/student_allocation/">Student View Allocation</a>
+</nav>
+
+<div class="container">
+
+  <!-- College Info -->
+  <section class="college-info">
+    <img src="{% static 'exams/images/download.png' %}" alt="KCET Logo" />
+    <div class="college-info-text">
+      <p><strong>Kamaraj College of Engineering and Technology</strong>, established in <strong>1998</strong>, is located in <strong>Virudhunagar, Tamil Nadu</strong>. It is a private institution recognized by the <strong>AICTE</strong>.</p>
+      <p>KCET offers diverse undergraduate and postgraduate programs in engineering and technology. With a reputation for academic rigor and student support, the institution fosters innovation, research, and holistic education.</p>
+      <p>We are committed to providing a secure and efficient exam hall allocation system that ensures fairness, transparency, and convenience for all students and staff.</p>
+    </div>
+  </section>
+
+  <!-- Features Cards -->
+  <section class="highlight-cards">
+    <div class="card">
+      <h3>Modern Campus</h3>
+      <p>Equipped with smart classrooms, advanced labs, and digital libraries for enhanced learning experience.</p>
+    </div>
+    <div class="card">
+      <h3>Skilled Faculty</h3>
+      <p>Our faculty consists of industry experts and researchers committed to student growth.</p>
+    </div>
+    <div class="card">
+      <h3>Placement Support</h3>
+      <p>Dedicated placement cell with top recruiters visiting every year for campus drives.</p>
+    </div>
+    <div class="card">
+      <h3>Seamless Allocation</h3>
+      <p>Robust and user-friendly allocation panel to manage exam halls efficiently.</p>
+    </div>
+  </section>
+
+  <!-- Results Section -->
+  <section class="results-section">
+    <h2>Exam Hall Allocation Results</h2>
+    <table class="results-table" aria-label="Exam Hall Allocation Results Table">
+      <thead>
+        <tr>
+          <th>Student Name</th>
+          <th>Roll Number</th>
+          <th>Department</th>
+          <th>Exam Hall</th>
+          <th>Seat Number</th>
+          <th>Exam Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Example rows; replace with your dynamic data -->
+        <tr>
+          <td>A. Kumar</td>
+          <td>21CS001</td>
+          <td>Computer Science</td>
+          <td>Hall C13</td>
+          <td>45</td>
+          <td>2025-06-04</td>
+        </tr>
+        <tr>
+          <td>S. Priya</td>
+          <td>21EC002</td>
+          <td>Electronics</td>
+          <td>Hall B07</td>
+          <td>22</td>
+          <td>2025-06-04</td>
+        </tr>
+        <tr>
+          <td>M. Rajesh</td>
+          <td>21ME003</td>
+          <td>Mechanical</td>
+          <td>Hall A01</td>
+          <td>18</td>
+          <td>2025-06-04</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Photo Gallery -->
+  <section class="photo-gallery">
+    <h2>Campus Gallery</h2>
+    <div class="gallery-grid">
+      <img src="{% static 'exams/images/campus1.jpg' %}" alt="Campus View 1" />
+      <img src="{% static 'exams/images/campus2.jpg' %}" alt="Campus View 2" />
+      <img src="{% static 'exams/images/campus3.jpg' %}" alt="Campus View 3" />
+      <img src="{% static 'exams/images/campus4.jpg' %}" alt="Campus View 4" />
+      <img src="{% static 'exams/images/campus5.jpg' %}" alt="Campus View 5" />
+    </div>
+  </section>
+
+  <!-- Prompt -->
+  <div class="prompt">
+    ✨ Use the navigation above to manage or view your exam hall allocations.
+  </div>
+</div>
+
+<footer>
+  &copy; 2025 KCET | Exam Hall Allocation System | Developed by [Your Name]
+</footer>
+
+<!-- Single Developer Section -->
+<section class="developer-section">
+  <div class="developer-container">
+    <img src="{% static 'exams/images/developer.jpg' %}" alt="Developer" class="developer-photo" />
+    <h3 class="developer-name">Mari selvavm K</h3>
+    <span class="developer-college">Kamaraj College of Engineering and Technology</span>
+    
+    <div class="social-links">
+      <a href="https://www.linkedin.com/in/mariselvam-k-913a94341/" class="social-link" target="_blank" title="LinkedIn">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+      <a href="https://www.instagram.com/oero_13/" class="social-link" target="_blank" title="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="mailto:[Your Email]" class="social-link" title="Email">
+        <i class="fas fa-envelope"></i>
+      </a>
+      <a href="https://github.com/mariselvam124d" class="social-link" target="_blank" title="GitHub">
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Watermark -->
+<div class="watermark">
+  KCET Exam System v2.0
+</div>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+</body>
+</html>

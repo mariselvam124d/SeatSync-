@@ -1,0 +1,481 @@
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Exam Hall Allocation - KCET</title>
+    <link rel="icon" href="https://kcet.ac.in/images/logo.png" />
+    <style>
+        /* Base styles */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background: #004080;
+            color: white;
+            padding: 20px 10px;
+            text-align: center;
+            animation: slideIn 1s ease-in-out;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        header h1 {
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+        }
+
+        header p {
+            margin: 5px 0 0;
+            font-style: italic;
+            font-weight: 300;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            background-color: #0066cc;
+            padding: 12px 0;
+            box-shadow: inset 0 -3px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        nav:hover {
+            background-color: #005bb5;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            padding: 10px 22px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Ripple effect on nav links */
+        nav a::after {
+            content: "";
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            top: 50%;
+            left: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.5s ease;
+            z-index: 0;
+        }
+        nav a:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        nav a:hover {
+            background-color: #003366;
+            transform: scale(1.1);
+            z-index: 1;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1100px;
+            margin: 40px auto 80px;
+            padding: 30px 40px;
+            background: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            animation: fadeInScale 1s ease forwards;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.92);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* College info */
+        .college-info {
+            text-align: justify;
+            line-height: 1.7;
+            font-size: 1.1rem;
+            color: #222;
+            position: relative;
+        }
+
+        .college-info img {
+            max-width: 200px;
+            float: right;
+            margin-left: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 64, 128, 0.3);
+            transition: transform 0.4s ease;
+            cursor: pointer;
+        }
+        .college-info img:hover {
+            transform: rotate(5deg) scale(1.05);
+            box-shadow: 0 0 25px rgba(0, 64, 128, 0.6);
+        }
+
+        /* Section separator */
+        hr {
+            border: none;
+            border-top: 2px solid #004080;
+            border-radius: 2px;
+            margin: 50px 0;
+            opacity: 0.3;
+        }
+
+        /* Allocation Form */
+        .allocation-form h2 {
+            color: #004080;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            letter-spacing: 1.5px;
+            text-shadow: 1px 1px 3px rgba(0, 64, 128, 0.3);
+        }
+
+        form {
+            max-width: 450px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        input[type="text"],
+        select {
+            flex: 1 1 100%;
+            padding: 14px 16px;
+            font-size: 1rem;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            outline-offset: 2px;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            border-color: #004080;
+            box-shadow: 0 0 8px rgba(0, 64, 128, 0.5);
+        }
+
+        button[type="submit"] {
+            flex: 1 1 100%;
+            background-color: #004080;
+            color: white;
+            padding: 16px 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #003366;
+            transform: scale(1.05);
+        }
+
+        /* Button ripple effect */
+        button[type="submit"]::after {
+            content: "";
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            top: 50%;
+            left: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.5s ease;
+            z-index: 0;
+        }
+        button[type="submit"]:hover::after {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Allocation list */
+        .allocation-list {
+            margin-top: 35px;
+            list-style: none;
+            padding: 0;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .allocation-list li {
+            background: #e7f0ff;
+            margin-bottom: 14px;
+            padding: 18px 24px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 64, 128, 0.15);
+            font-weight: 600;
+            color: #003366;
+            transition: background-color 0.3s ease;
+            cursor: default;
+        }
+
+        .allocation-list li:hover {
+            background-color: #cce0ff;
+            box-shadow: 0 6px 20px rgba(0, 64, 128, 0.3);
+        }
+
+        /* Error message */
+        .error {
+            color: #b00020;
+            background-color: #ffebee;
+            border: 1px solid #b00020;
+            max-width: 450px;
+            margin: 30px auto 0;
+            padding: 15px 20px;
+            font-weight: 700;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(176, 0, 32, 0.3);
+            animation: errorPulse 2s infinite;
+        }
+
+        @keyframes errorPulse {
+            0%, 100% {
+                background-color: #ffebee;
+            }
+            50% {
+                background-color: #ffcdd2;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: #004080;
+            color: white;
+            text-align: center;
+            padding: 18px 10px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: auto;
+            user-select: none;
+            letter-spacing: 0.8px;
+            box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            nav {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .college-info img {
+                float: none;
+                display: block;
+                margin: 0 auto 20px auto;
+            }
+            .container {
+                margin: 20px 15px 60px;
+                padding: 25px 20px;
+            }
+            form {
+                gap: 15px;
+            }
+            input[type="text"],
+            select,
+            button[type="submit"] {
+                flex: 1 1 100%;
+            }
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #004080;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-spinner.active {
+            opacity: 1;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Exam Hall Allocation System</h1>
+    <p>Kamaraj College of Engineering and Technology</p>
+</header>
+
+<nav>
+    <a href="/staff/allocation/">Staff (Admin) Allocation Panel</a>
+    <a href="/student/allocation/">Student View Allocation</a>
+</nav>
+
+<div class="container">
+    <div class="college-info" aria-label="College information">
+         
+        {% load static %}
+        <img src="{% static 'exams/images/11.jpg' %}" alt="KCET Logo" loading="lazy" />
+        <p>
+            <strong>Kamaraj College of Engineering and Technology</strong> was established in the year <strong>1998</strong>.
+            Located in <strong>Virudhunagar, Tamil Nadu</strong>, it is a private institute recognized by the <strong>AICTE</strong>.
+            KCET offers a wide range of <strong>Undergraduate and Postgraduate courses</strong> in the fields of Engineering and Technology.
+        </p>
+        <p>
+            The college is known for its academic excellence, well-equipped infrastructure, and a student-centric approach to education.
+        </p>
+        <p style="margin-top: 1.5rem; font-style: italic; color: #004080; font-weight: 600; text-align: center;">
+            "Empowering Students, Enabling Success"
+        </p>
+    </div>
+
+    <hr />
+
+    <section class="allocation-form" aria-labelledby="allocation-title">
+        <h2 id="allocation-title">Check Exam Hall Allocation</h2>
+        <form method="POST" id="allocationForm" novalidate>
+            {% csrf_token %}
+            <input
+                type="text"
+                name="roll_number"
+                id="rollNumber"
+                placeholder="Enter Roll Number"
+                required
+                pattern="^[A-Za-z0-9\-]+$"
+                title="Roll number should be alphanumeric"
+                aria-describedby="rollNumberHelp"
+                autocomplete="off"
+            />
+            <small id="rollNumberHelp" style="color: #666; font-size: 0.9rem; margin-top: -12px; margin-bottom: 18px; display: block;">
+                Example: 21CS001
+            </small>
+
+            <select name="year" id="yearSelect" required aria-label="Select Year">
+                <option value="" disabled selected>Select Year</option>
+                <option value="1">1st Year</option>
+                <option value="2">2nd Year</option>
+                <option value="3">3rd Year</option>
+                <option value="4">4th Year</option>
+            </select>
+
+            <select name="semester" id="semesterSelect" required aria-label="Select Semester">
+                <option value="" disabled selected>Select Semester</option>
+                <option value="1">1st Semester</option>
+                <option value="2">2nd Semester</option>
+                <option value="3">3rd Semester</option>
+                <option value="4">4th Semester</option>
+                <option value="5">5th Semester</option>
+                <option value="6">6th Semester</option>
+            </select>
+
+            <button type="submit" id="submitBtn" aria-live="polite">
+                Check Allocation
+                <span class="loading-spinner" id="loadingSpinner" aria-hidden="true"></span>
+            </button>
+        </form>
+
+        {% if allocations %}
+            <ul class="allocation-list" role="list" aria-live="polite" aria-atomic="true">
+                {% for allocation in allocations %}
+                    <li tabindex="0">
+                        <strong>{{ allocation.exam.exam_name }}</strong> - 
+                        {{ allocation.exam_hall.hall_name }} <br />
+                        {{ allocation.allocation_date }} | {{ allocation.allocation_time }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% elif error %}
+            <p class="error" role="alert">{{ error }}</p>
+        {% endif %}
+    </section>
+</div>
+
+<footer>
+    &copy; 2025 KCET | Designed for Exam Hall Allocation | Developed by Django Mini Project Team
+</footer>
+
+<script>
+    // Simple form submission loading spinner
+    const form = document.getElementById('allocationForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+
+    form.addEventListener('submit', function (e) {
+        // Optional: prevent submit if invalid - browser will handle validation, but you can add custom if needed.
+        if (!form.checkValidity()) {
+            return; // Let browser show errors
+        }
+        submitBtn.disabled = true;
+        loadingSpinner.classList.add('active');
+    });
+
+    // Optional: client-side validation example
+    const rollNumberInput = document.getElementById('rollNumber');
+    rollNumberInput.addEventListener('input', () => {
+        const pattern = /^[A-Za-z0-9\-]+$/;
+        if (!pattern.test(rollNumberInput.value)) {
+            rollNumberInput.setCustomValidity('Roll number should be alphanumeric only.');
+        } else {
+            rollNumberInput.setCustomValidity('');
+        }
+    });
+</script>
+
+</body>
+</html>
